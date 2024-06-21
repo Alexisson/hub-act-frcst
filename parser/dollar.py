@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 import pandas as pd
 
-FOLDER = "files"
+from parser.cfg import FOLDER
 
 start_date = datetime.datetime.strptime("01.01.2015", "%d.%m.%Y")
 end_date = datetime.datetime.now()
@@ -27,7 +27,8 @@ def download_dollar_exchange_rate(start_date, end_date):
         output.close()
 
 
-download_dollar_exchange_rate(start_date, end_date)
+if __name__ == "__main__":
+    download_dollar_exchange_rate(start_date, end_date)
 
 
 def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):

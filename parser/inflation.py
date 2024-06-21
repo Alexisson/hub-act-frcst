@@ -5,7 +5,7 @@ from pathlib import Path
 import requests
 import pandas as pd
 
-FOLDER = "files"
+from parser.cfg import FOLDER
 
 start_date = datetime.datetime.strptime("01.01.2015", "%d.%m.%Y")
 end_date = datetime.datetime.now()
@@ -47,5 +47,5 @@ def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime)
     new_df.fillna(method='ffill', inplace=True)
     return new_df
 
-
-print(get_inflation_df(start_date, end_date))
+if __name__ == "__main__":
+    print(get_inflation_df(start_date, end_date))

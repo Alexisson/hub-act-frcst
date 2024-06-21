@@ -4,15 +4,14 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
+from parser.cfg import FOLDER, BASE_URL
 from parser.utils import download_xlsx_file
-
-FOLDER = "files"
 
 if not Path(FOLDER).is_dir():
     Path(FOLDER).mkdir(parents=True)
 if not Path(os.path.join(FOLDER, "credits_msp")).is_dir():
     Path(os.path.join(FOLDER, "credits_msp")).mkdir(parents=True)
-BASE_URL = "https://www.cbr.ru/"
+
 
 files_list = ["All_Borrowers_info", "New_loans_sme_by_activity", "Debt_sme", "A_Debt_corp_by_activity",
               "Debt_sme_by_activity", "Funds_clients"]
@@ -53,8 +52,9 @@ def download_files_from_href(soup, base_url, files_list):
             print(f"File downloaded:{a['href'].split('/')[-1]}")
 
 
-download_all_credits_msp(soup, BASE_URL, FOLDER)
-download_files_from_href(soup, BASE_URL, files_list)
+if __name__ == "__main__":
+    download_all_credits_msp(soup, BASE_URL, FOLDER)
+    download_files_from_href(soup, BASE_URL, files_list)
 
-stats_soup = get_soup(url_for_stats)
-download_files_from_href(stats_soup, BASE_URL, files_list_stats)
+    stats_soup = get_soup(url_for_stats)
+    download_files_from_href(stats_soup, BASE_URL, files_list_stats)
