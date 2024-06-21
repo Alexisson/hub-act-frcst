@@ -14,7 +14,7 @@ def get_cpi_df():
         last_day = monthrange(year, month)[1]
         for day in range(1, last_day + 1):
             date = datetime(year, month, day)
-            daily_data.append({'date': date, 'Value': row['CPI_M_CHI']})
+            daily_data.append({'date': date, 'cpi': row['CPI_M_CHI']})
     return pd.DataFrame(daily_data)
 
 
