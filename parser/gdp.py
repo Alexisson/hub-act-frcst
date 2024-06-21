@@ -25,16 +25,16 @@ def download_gdp():
 def get_dfg_dataframe():
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_na_dushu_s1995-2023.xlsx"),
                        sheet_name="1", usecols='A:Q', skiprows=2, nrows=2)
-    df_melted = df.melt(var_name='data', value_name='gdp')
+    df_melted = df.melt(var_name='date', value_name='gdp')
     df_expanded = pd.DataFrame()
 
     for index, row in df_melted.iterrows():
-        year = int(row['data'])
+        year = int(row['date'])
         value = row['gdp']
         start_date = datetime(year, 1, 1)
         end_date = datetime(year, 12, 31)
         date_range = pd.date_range(start_date, end_date, freq='D')
-        year_data = pd.DataFrame({'data': date_range, 'gdp': np.repeat(value, len(date_range))})
+        year_data = pd.DataFrame({'date': date_range, 'gdp': np.repeat(value, len(date_range))})
         df_expanded = pd.concat([df_expanded, year_data], ignore_index=True)
 
     return df_expanded
@@ -42,4 +42,4 @@ def get_dfg_dataframe():
 
 # download_gdp()
 if __name__ == "__main__":
-    get_dfg_dataframe()
+    print(get_dfg_dataframe())

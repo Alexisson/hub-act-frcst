@@ -27,16 +27,16 @@ def download_dollar_exchange_rate(start_date, end_date):
         output.close()
 
 
-if __name__ == "__main__":
-    download_dollar_exchange_rate(start_date, end_date)
-
-
 def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
     download_dollar_exchange_rate(start_date, end_date)
 
     df = pd.read_excel(os.path.join(os.path.join("files", "dollar"), f"{start_date_str}-{end_date_str}.xlsx"),
-                    usecols=['data', 'curs'])
-
+                       usecols=['data', 'curs'])
+    df = df.rename(columns={'data': 'date'})
     return df
+
+
+if __name__ == "__main__":
+    print(get_dollar_df(start_date, end_date))
