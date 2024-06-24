@@ -25,4 +25,4 @@ def transform_df_to_format(df):
             'September', 'Сентябрь').replace('October', 'Октябрь').replace('November', 'Ноябрь').replace('December',
                                                                                                          'Декабрь'))
     df_new = df_new.drop(columns=["date"])
-    return df_new
+    return df_new.drop_duplicates()
