@@ -60,4 +60,5 @@ def get_bal_df():
     return df_daily
 
 
-print(get_bal_df().info())
+if __name__ == "__main__":
+    print(get_bal_df().info())

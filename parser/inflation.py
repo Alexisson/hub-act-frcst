@@ -44,7 +44,7 @@ def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime)
     new_df = new_df.merge(df, on='Дата', how='left')
 
     # Заполнение пропущенных значений методом forward fill
-    new_df.fillna(method='ffill', inplace=True)
+    new_df.ffill(inplace=True)
     new_df = new_df.rename(columns={'Дата': 'date'})
     return new_df
 
