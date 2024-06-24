@@ -57,4 +57,4 @@ def parse_html_table(soup):
 
 if __name__ == "__main__":
     soup = get_soup(url_for_parse)
-    print(transform_df_to_format(parse_html_table(soup))["month_n"])
+    print(transform_df_to_format(parse_html_table(soup)))

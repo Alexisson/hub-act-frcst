@@ -15,7 +15,7 @@ def transform_df_to_format(df):
     df_new['year'] = df['date'].dt.year
 
     # Add 'Отчетный период' column formatted as 'Month Year', e.g., 'Январь 2022'
-    df_new['Отчетный период'] = df['date'].dt.strftime('%B %Y')
+    df_new['Отчетный период'] = df['date'].dt.strftime('%B %Y г.')
 
     # Ensure the 'Отчетный период' column is in Russian
     df_new['Отчетный период'] = df_new['Отчетный период'].apply(
