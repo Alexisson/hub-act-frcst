@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
 
@@ -26,10 +27,13 @@ def get_dfg_dataframe():
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_na_dushu_s1995-2023.xlsx"),
                        sheet_name="1", usecols='A:Q', skiprows=2, nrows=2)
     df_melted = df.melt(var_name='date', value_name='gdp')
+    df2 = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_na_dushu_s1995-2023.xlsx"),
+                        sheet_name="2", usecols='A:M', skiprows=2, nrows=2)
+    df_melted2 = df2.melt(var_name='date', value_name='gdp')
     df_expanded = pd.DataFrame()
-
+    df_melted = pd.concat([df_melted, df_melted2], axis=0)
     for index, row in df_melted.iterrows():
-        year = int(row['date'])
+        year = int(str(row['date'])[:4])
         value = row['gdp']
         start_date = datetime(year, 1, 1)
         end_date = datetime(year, 12, 31)
@@ -42,4 +46,6 @@ def get_dfg_dataframe():
 
 # download_gdp()
 if __name__ == "__main__":
-    print(get_dfg_dataframe())
+    df = transform_df_to_format(get_dfg_dataframe())
+    print(df.loc[df['year'].idxmax()])
+
