@@ -10,7 +10,11 @@ def get_cpi_df():
     df = df[1:]
     daily_data = []
     for index, row in df.iterrows():
-        year, month = int(row['T']), int(row['CPI_M_CHI'])
+        if len(str(row['T']).split()) == 2:
+            year = int(str(row['T']).split()[0])
+            month = int(str(row['T']).split()[1])
+        else:
+            month = int(row['T'])
         last_day = monthrange(year, month)[1]
         for day in range(1, last_day + 1):
             date = datetime(year, month, day)

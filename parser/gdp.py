@@ -48,4 +48,4 @@ def get_gdp_dataframe():
 # download_gdp()
 if __name__ == "__main__":
     df = transform_df_to_format(get_gdp_dataframe())
-    print(df.info())
+    print(df)

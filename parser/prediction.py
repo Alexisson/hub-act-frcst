@@ -21,7 +21,7 @@ def get_soup(url_for_parse):
     return BeautifulSoup(page.text, "html.parser")
 
 
-def parse_html_table(soup):
+def get_inflation_predict(soup):
     # Parse the HTML content
 
     # Find the table with the class 'data levels'

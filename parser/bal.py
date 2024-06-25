@@ -62,4 +62,4 @@ def get_bal_df():
 
 
 if __name__ == "__main__":
-    print(get_bal_df().info())
+    print(get_bal_df())
