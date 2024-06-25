@@ -6,6 +6,7 @@ import requests
 import pandas as pd
 
 from parser.cfg import FOLDER
+from data_transform.transform_df import transform_df_to_format
 
 start_date = datetime.datetime.strptime("01.01.2015", "%d.%m.%Y")
 end_date = datetime.datetime.now()
@@ -29,6 +30,7 @@ def download_inflation(start_date, end_date):
 
 
 def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime):
+    download_inflation(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
     download_inflation(start_date, end_date)
@@ -50,4 +52,4 @@ def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime)
 
 
 if __name__ == "__main__":
-    print(get_inflation_df(start_date, end_date))
+    print(transform_df_to_format(get_inflation_df(start_date, end_date)).to_string())

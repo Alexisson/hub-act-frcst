@@ -28,6 +28,7 @@ def download_dollar_exchange_rate(start_date, end_date):
 
 
 def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):
+    download_dollar_exchange_rate(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
     download_dollar_exchange_rate(start_date, end_date)

@@ -48,6 +48,7 @@ def generate_dates(quarter_str, value):
 
 # Счет текущих операций
 def get_bal_df():
+    download_bal()
     if not Path(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx")).is_file():
         download_bal()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx"),

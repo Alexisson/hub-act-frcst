@@ -23,7 +23,8 @@ def download_gdp():
         output.close()
 
 
-def get_dfg_dataframe():
+def get_gdp_dataframe():
+    download_gdp()
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_na_dushu_s1995-2023.xlsx"),
                        sheet_name="1", usecols='A:Q', skiprows=2, nrows=2)
     df_melted = df.melt(var_name='date', value_name='gdp')
@@ -46,6 +47,5 @@ def get_dfg_dataframe():
 
 # download_gdp()
 if __name__ == "__main__":
-    df = transform_df_to_format(get_dfg_dataframe())
-    print(df.loc[df['year'].idxmax()])
-
+    df = transform_df_to_format(get_gdp_dataframe())
+    print(df.info())
