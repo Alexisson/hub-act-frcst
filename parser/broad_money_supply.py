@@ -11,12 +11,9 @@ def get_broad_money_supply(start_year: int, end_year: int):
         columns=["date", "broad_money"])
     i = 0
     for row in request.json()["RawData"]:
-        if i % 6 == 0:
-            values = []
-            values.append(pd.to_datetime(row["date"]))
-            values.append(row["obs_val"])
-            df.loc[i // 6] = values
-        i += 1
+        if row["element_id"] == 12:
+            df.loc[i] = [pd.to_datetime(row["date"]) - pd.DateOffset(months=1), row["obs_val"]]
+            i += 1
     return df
 
 
