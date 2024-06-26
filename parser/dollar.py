@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 import pandas as pd
 
+from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
 start_date = datetime.datetime.strptime("01.01.2015", "%d.%m.%Y")
@@ -36,8 +37,13 @@ def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):
     df = pd.read_excel(os.path.join(os.path.join("files", "dollar"), f"{start_date_str}-{end_date_str}.xlsx"),
                        usecols=['data', 'curs'])
     df = df.rename(columns={'data': 'date'})
-    return df
+    # Установка первого числа месяца
+    df['date'] = df['date'].values.astype('datetime64[M]')
+
+    # Группировка по месяцу и вычисление среднего значения
+    df_monthly = df.groupby('date').mean().reset_index()
+    return df_monthly
 
 
 if __name__ == "__main__":
-    print(get_dollar_df(start_date, end_date))
+    print(transform_df_to_format(get_dollar_df(start_date, end_date)))

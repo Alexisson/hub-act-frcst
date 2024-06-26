@@ -4,21 +4,21 @@ import requests
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_direct_investments(start_year: int, end_year: int):
-    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=11&datasetId=19&measureId="
+def get_capital_transfers(start_year: int, end_year: int):
+    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=10&datasetId=18&measureId="
     request = requests.get(url)
     df = pd.DataFrame(
-        columns=["date", "balance", "pure_assumption_of_liability", "net_acquisition_of_financial_assets"])
+        columns=["date", "balance", "input", "output"])
     i = 0
     values = {}
     for row in request.json()["RawData"]:
         if row["element_id"] == 28:
             values["date"] = pd.to_datetime(row["date"]) - pd.DateOffset(months=3)
             values["balance"] = row["obs_val"]
-        elif row["element_id"] == 33:
-            values["pure_assumption_of_liability"] = row["obs_val"]
+        elif row["element_id"] == 31:
+            values["input"] = row["obs_val"]
         else:
-            values["net_acquisition_of_financial_assets"] = row["obs_val"]
+            values["output"] = row["obs_val"]
         if i % 3 == 2 and i > 0:
             df.loc[i // 3] = values
             values = {}
@@ -31,4 +31,4 @@ def get_direct_investments(start_year: int, end_year: int):
 
 
 if __name__ == "__main__":
-    print(get_direct_investments(2015, 2023).to_string())
+    print(transform_df_to_format(get_capital_transfers(2019, 2023)))

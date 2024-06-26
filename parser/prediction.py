@@ -57,4 +57,4 @@ def get_inflation_predict(soup):
 
 if __name__ == "__main__":
     soup = get_soup(url_for_parse)
-    print(transform_df_to_format(parse_html_table(soup)))
+    print(transform_df_to_format(get_inflation_predict(soup)))

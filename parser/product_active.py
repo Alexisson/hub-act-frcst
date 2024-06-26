@@ -25,4 +25,4 @@ def get_product_actives(start_year: int, end_year: int):
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_direct_investments(2015, 2023)))
+    print(transform_df_to_format(get_product_actives(2015, 2023)))
