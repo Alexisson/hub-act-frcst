@@ -1,3 +1,4 @@
 parser/files
 .env
 .idea
+__pycache__/
