@@ -18,8 +18,9 @@ def download_gdp():
 
     gdp_url = "https://rosstat.gov.ru/storage/mediabank/VVP_KVartal_s%201995-2024.xlsx"
 
-    resp = requests.get(gdp_url)
+
     if not Path(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx")).is_file():
+        resp = requests.get(gdp_url)
         output = open(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx"), 'wb')
         output.write(resp.content)
         output.close()
