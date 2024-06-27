@@ -1,14 +1,10 @@
 import os
-from datetime import datetime, timedelta
 from pathlib import Path
 
-import numpy as np
 import pandas as pd
-import requests
 
 from data_transform.transform_df import transform_df_to_format
-from parser.cb_xlsx import get_soup
-from parser.cfg import FOLDER, BASE_URL
+from parser.cfg import FOLDER
 from parser.utils import download_xlsx_file
 
 

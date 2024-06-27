@@ -5,6 +5,7 @@ import pandas as pd
 import requests
 from bs4 import BeautifulSoup
 
+from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
 from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
@@ -21,10 +22,34 @@ def get_soup(url_for_parse):
     return BeautifulSoup(page.text, "html.parser")
 
 
-def get_inflation_predict(soup):
+def replace_with_average(value):
+    if isinstance(value, str):
+        # Замена тире на дефис и запятых на точки
+        value = value.replace('—', '-').replace(',', '.')
+        if '-' in value:
+            numbers = value.split('-')
+            try:
+                # Преобразование строк в числа с плавающей точкой
+                numbers = [float(num) for num in numbers]
+                # Возвращаем среднее значение
+                return float(sum(numbers) / len(numbers))
+            except ValueError:
+                # В случае ошибки преобразования возвращаем исходное значение
+                return value
+        else:
+            return value
+    else:
+        return value
+
+
+# Применение функции ко всем ячейкам DataFrame
+
+
+def get_inflation_predict():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
+    soup = get_soup(url_for_parse)
     table = soup.find('table', {'class': 'data levels'})
 
     # Parse the table rows and headers
@@ -46,15 +71,22 @@ def get_inflation_predict(soup):
     # Сбросим индекс, чтобы 'Год' стал одной из колонок
     df_pivot.reset_index(inplace=True)
     df_pivot['Год'] = pd.to_datetime(df_pivot['Год'], format='%Y')
-    new_df = pd.DataFrame(pd.date_range(df_pivot['Год'].min(), df_pivot['Год'].max(), freq='D'), columns=['Год'])
+    new_df = pd.DataFrame(
+        pd.date_range(df_pivot['Год'].min(), df_pivot['Год'].max() + pd.DateOffset(day=31) + pd.DateOffset(months=11),
+                      freq='D'), columns=['Год'])
+
     new_df = new_df.merge(df_pivot, on='Год', how='left')
     # Заполнение пропущенных значений методом forward fill
     new_df.ffill(inplace=True)
     new_df = new_df.rename(columns={'Год': 'date'})
-
+    new_df = new_df.applymap(replace_with_average)
+    df.columns = df.columns.str.replace('\xa0', ' ', regex=True)
+    new_df[new_df.columns[3]] = new_df[new_df.columns[3]].astype(float)
+    new_df[new_df.columns[3]] = new_df[new_df.columns[3]].astype(float)
     return new_df
 
 
 if __name__ == "__main__":
-    soup = get_soup(url_for_parse)
-    print(transform_df_to_format(get_inflation_predict(soup)))
+    df = transform_df_to_format(get_inflation_predict())
+    df = approximate_df_from_year_to_monthly(df, df.columns[2])
+    print(df)

@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 import pandas as pd
 
+from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
 from parser.cfg import FOLDER
 from data_transform.transform_df import transform_df_to_format
 
@@ -52,4 +53,6 @@ def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime)
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_inflation_df(start_date, end_date)).to_string())
+    df = transform_df_to_format(get_inflation_df(start_date, end_date))
+
+    print(df)
