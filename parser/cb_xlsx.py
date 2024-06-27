@@ -12,7 +12,7 @@ if not Path(FOLDER).is_dir():
 if not Path(os.path.join(FOLDER, "credits_msp")).is_dir():
     Path(os.path.join(FOLDER, "credits_msp")).mkdir(parents=True)
 
-files_list = ["All_Borrowers_info", "New_loans_sme_by_activity", "Debt_sme", "A_Debt_corp_by_activity",
+files_list = ["New_loans_sme", "All_Borrowers_info", "New_loans_sme_by_activity", "Debt_sme", "A_Debt_corp_by_activity",
               "Debt_sme_by_activity", "Funds_clients"]
 files_list_stats = ["statbs", "obs"]
 url_for_parse = "https://cbr.ru/statistics/bank_sector/sors/"
