@@ -5,6 +5,7 @@ from pathlib import Path
 import pandas as pd
 import requests
 
+from data_transform.spices_remove import remove_spikes
 from parser.cb_xlsx import get_soup
 from parser.cfg import FOLDER, BASE_URL
 from parser.utils import download_xlsx_file
@@ -47,8 +48,7 @@ def generate_dates(quarter_str, value):
 
 
 # Счет текущих операций
-def get_bal_df():
-    download_bal()
+def get_bal_df(spikes_remove=True):
     if not Path(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx")).is_file():
         download_bal()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx"),
@@ -58,6 +58,8 @@ def get_bal_df():
     for index, row in df_melted.iterrows():
         df_quarter = generate_dates(row['data'], row['bal'])
         df_daily = pd.concat([df_daily, df_quarter], ignore_index=True)
+    if spikes_remove:
+        df_daily = remove_spikes(df_daily, 'bal')
     return df_daily
 
 

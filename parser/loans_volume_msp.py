@@ -1,10 +1,11 @@
 import pandas as pd
 import requests
 
+from data_transform.spices_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_loans_volume_msp_df(start_year: int, end_year: int):
+def get_loans_volume_msp_df(start_year: int, end_year: int, spikes_remove=True):
 
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=52&measureId=22"
     request = requests.get(url)
@@ -18,6 +19,8 @@ def get_loans_volume_msp_df(start_year: int, end_year: int):
             values.append(row["obs_val"])
             df.loc[i] = values
             i += 1
+    if spikes_remove:
+        df = remove_spikes(df, "msp_loans_volume")
     return df
 
 
