@@ -5,6 +5,7 @@ from pathlib import Path
 import requests
 import pandas as pd
 
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
@@ -28,7 +29,7 @@ def download_dollar_exchange_rate(start_date, end_date):
         output.close()
 
 
-def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):
+def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True):
     download_dollar_exchange_rate(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
@@ -42,6 +43,8 @@ def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime):
 
     # Группировка по месяцу и вычисление среднего значения
     df_monthly = df.groupby('date').mean().reset_index()
+    if spikes_remove:
+        df_monthly = remove_spikes(df_monthly, 'curs')
     return df_monthly
 
 

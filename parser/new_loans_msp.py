@@ -1,7 +1,7 @@
 import pandas as pd
 import requests
 
-from data_transform.spices_remove import remove_spikes
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 

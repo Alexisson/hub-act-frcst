@@ -24,5 +24,14 @@ def transform_df_to_format(df):
                                                                                                              'Август').replace(
             'September', 'Сентябрь').replace('October', 'Октябрь').replace('November', 'Ноябрь').replace('December',
                                                                                                          'Декабрь'))
-    df_new = df_new.drop(columns=["date"])
-    return df_new.drop_duplicates()
+
+    col_name = df.columns[1]
+    # Группируем данные по месяцу и году, вычисляем среднее
+    monthly_mean = df_new.groupby(df_new['date'].dt.to_period('M'))[col_name].mean().reset_index()
+
+    # Преобразуем обратно в datetime
+    monthly_mean['date'] = monthly_mean['date'].dt.to_timestamp()
+
+    monthly_mean = pd.merge(df_new, monthly_mean, on=['date'])
+    monthly_mean = monthly_mean.drop(columns=["date"], axis=1)
+    return monthly_mean.drop_duplicates()

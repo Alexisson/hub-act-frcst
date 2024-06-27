@@ -1,10 +1,11 @@
 import pandas as pd
 import requests
 
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_capital_transfers(start_year: int, end_year: int):
+def get_capital_transfers(start_year: int, end_year: int, spikes_remove=True):
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=10&datasetId=18&measureId="
     request = requests.get(url)
     df = pd.DataFrame(
@@ -27,7 +28,12 @@ def get_capital_transfers(start_year: int, end_year: int):
 
     # Заполняем пропущенные месяцы данными
     df_resampled = df.resample('MS').ffill()
-    return df_resampled.reset_index()
+    df_resampled = df_resampled.reset_index()
+    if spikes_remove:
+        df_resampled = remove_spikes(df_resampled, 'balance')
+        df_resampled = remove_spikes(df_resampled, 'input')
+        df_resampled = remove_spikes(df_resampled, 'output')
+    return df_resampled
 
 
 if __name__ == "__main__":

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pandas as pd
 
-from data_transform.spices_remove import remove_spikes
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 from parser.utils import download_xlsx_file
@@ -25,7 +25,7 @@ def get_bal_increase_df(spikes_remove=True):
                        sheet_name="Лист1", usecols='B:JJ', nrows=1)
     df_melted = df.melt(var_name='date', value_name='bal_increase')
     if spikes_remove:
-        df_melted = remove_spikes(df_melted, 'bal')
+        df_melted = remove_spikes(df_melted, 'bal_increase')
     return df_melted
 
 

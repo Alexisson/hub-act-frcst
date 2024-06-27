@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import requests
 
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
@@ -31,7 +32,7 @@ def to_date(year, quarter):
     return datetime(year, quarter_to_month[quarter], 1)
 
 
-def get_gdp_on_2021_prices_dataframe():
+def get_gdp_on_2021_prices_dataframe(spikes_remove=True):
     download_gdp()
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx"),
                        sheet_name="9", usecols='A:BA', skiprows=2, nrows=3)
@@ -69,7 +70,10 @@ def get_gdp_on_2021_prices_dataframe():
 
     # Заполняем пропущенные месяцы данными
     df_resampled = new_df.resample('MS').ffill()
-    return df_resampled.reset_index()
+    df_resampled = df_resampled.reset_index()
+    if spikes_remove:
+        df_resampled = remove_spikes(df_resampled, 'gdp')
+    return df_resampled
 
 
 def get_gdp_dataframe_wout_seasons():

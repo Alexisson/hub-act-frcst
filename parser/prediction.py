@@ -6,6 +6,7 @@ import requests
 from bs4 import BeautifulSoup
 
 from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
+from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 from parser.cfg import FOLDER
 
@@ -45,7 +46,7 @@ def replace_with_average(value):
 # Применение функции ко всем ячейкам DataFrame
 
 
-def get_inflation_predict():
+def get_inflation_predict(spikes_remove=True):
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -88,5 +89,5 @@ def get_inflation_predict():
 
 if __name__ == "__main__":
     df = transform_df_to_format(get_inflation_predict())
-    df = approximate_df_from_year_to_monthly(df, df.columns[2])
+    df = approximate_df_from_year_to_monthly(df, df.columns[3])
     print(df)

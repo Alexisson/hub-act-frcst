@@ -6,7 +6,7 @@ import requests
 import pandas as pd
 
 from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
-from data_transform.spices_remove import remove_spikes
+from data_transform.spikes_remove import remove_spikes
 from parser.cfg import FOLDER
 from data_transform.transform_df import transform_df_to_format
 

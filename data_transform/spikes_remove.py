@@ -4,7 +4,6 @@ from statsmodels.tsa.seasonal import seasonal_decompose
 
 def remove_spikes(df, column_name, window_size=3, sigma=2):
     # Конвертируем столбец 'date' в формат datetime и сортируем данные
-    df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date').set_index('date')
 
     # Декомпозиция временного ряда
@@ -19,10 +18,11 @@ def remove_spikes(df, column_name, window_size=3, sigma=2):
 
     # Удаляем выбросы
     outliers = residuals.abs() > threshold
-    df[column_name][outliers] = None
+    df.loc[outliers, column_name] = None
+
 
     # Заполняем пропущенные значения сглаженными данными
-    df[column_name].interpolate(method='time', inplace=True)
+    df.loc[:, column_name] = df[column_name].interpolate(method='time')
 
     # Добавляем сезонную компоненту обратно к данным
     df[column_name] += seasonal

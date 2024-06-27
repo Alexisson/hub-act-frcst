@@ -5,7 +5,8 @@ from pathlib import Path
 import pandas as pd
 import requests
 
-from data_transform.spices_remove import remove_spikes
+from data_transform.spikes_remove import remove_spikes
+from data_transform.transform_df import transform_df_to_format
 from parser.cb_xlsx import get_soup
 from parser.cfg import FOLDER, BASE_URL
 from parser.utils import download_xlsx_file
@@ -42,7 +43,7 @@ def generate_dates(quarter_str, value):
     date_list = [start_date + timedelta(days=x) for x in range((end_date - start_date).days + 1)]
 
     # Создание DataFrame с этими датами и значением
-    df_quarter = pd.DataFrame({'data': date_list, 'значение': value})
+    df_quarter = pd.DataFrame({'date': date_list, 'bal': value})
 
     return df_quarter
 
@@ -53,15 +54,17 @@ def get_bal_df(spikes_remove=True):
         download_bal()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx"),
                        sheet_name="Кварталы", skiprows=4, usecols=lambda x: 'Unnamed' not in x, nrows=1)
-    df_melted = df.melt(var_name='data', value_name='bal')
-    df_daily = pd.DataFrame(columns=['data', 'значение'])
+    df_melted = df.melt(var_name='date', value_name='bal')
+    df_daily = pd.DataFrame(columns=['date', 'bal'])
     for index, row in df_melted.iterrows():
-        df_quarter = generate_dates(row['data'], row['bal'])
+        df_quarter = generate_dates(row['date'], row['bal'])
         df_daily = pd.concat([df_daily, df_quarter], ignore_index=True)
+    df_daily = df_daily.ffill()
+    print(df_daily.to_string())
     if spikes_remove:
         df_daily = remove_spikes(df_daily, 'bal')
     return df_daily
 
 
 if __name__ == "__main__":
-    print(get_bal_df())
+    print(transform_df_to_format(get_bal_df()))
