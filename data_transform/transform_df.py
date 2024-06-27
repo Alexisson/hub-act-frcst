@@ -32,6 +32,7 @@ def transform_df_to_format(df):
     # Преобразуем обратно в datetime
     monthly_mean['date'] = monthly_mean['date'].dt.to_timestamp()
 
-    monthly_mean = pd.merge(df_new, monthly_mean, on=['date'])
-    monthly_mean = monthly_mean.drop(columns=["date"], axis=1)
+    monthly_mean = pd.merge(df_new, monthly_mean, on=['date'], suffixes=['_x', ''])
+    monthly_mean = monthly_mean.drop(columns=[monthly_mean.columns[1]])
+
     return monthly_mean.drop_duplicates()

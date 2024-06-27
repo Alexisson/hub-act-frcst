@@ -18,14 +18,14 @@ def download_bal_increase():
     print(f"File downloaded:{bal_url.split('/')[-1]}")
 
 
-def get_bal_increase_df(spikes_remove=True):
+def get_bal_increase_df(spikes_remove=True, window_size=3, sigma=2):
     if not Path(os.path.join(os.path.join("files", "bal_increase"), f"indicators_cpd.xlsx")).is_file():
         download_bal_increase()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal_increase"), "indicators_cpd.xlsx"),
                        sheet_name="Лист1", usecols='B:JJ', nrows=1)
     df_melted = df.melt(var_name='date', value_name='bal_increase')
     if spikes_remove:
-        df_melted = remove_spikes(df_melted, 'bal_increase')
+        df_melted = remove_spikes(df_melted, 'bal_increase', window_size, sigma)
     return df_melted
 
 

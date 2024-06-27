@@ -29,7 +29,7 @@ def download_dollar_exchange_rate(start_date, end_date):
         output.close()
 
 
-def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True):
+def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True, window_size=3, sigma=2):
     download_dollar_exchange_rate(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
@@ -44,7 +44,7 @@ def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, sp
     # Группировка по месяцу и вычисление среднего значения
     df_monthly = df.groupby('date').mean().reset_index()
     if spikes_remove:
-        df_monthly = remove_spikes(df_monthly, 'curs')
+        df_monthly = remove_spikes(df_monthly, 'curs', window_size, sigma)
     return df_monthly
 
 

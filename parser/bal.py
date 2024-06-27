@@ -49,7 +49,7 @@ def generate_dates(quarter_str, value):
 
 
 # Счет текущих операций
-def get_bal_df(spikes_remove=True):
+def get_bal_df(spikes_remove=True, window_size=3, sigma=2):
     if not Path(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx")).is_file():
         download_bal()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx"),
@@ -60,11 +60,10 @@ def get_bal_df(spikes_remove=True):
         df_quarter = generate_dates(row['date'], row['bal'])
         df_daily = pd.concat([df_daily, df_quarter], ignore_index=True)
     df_daily = df_daily.ffill()
-    print(df_daily.to_string())
     if spikes_remove:
-        df_daily = remove_spikes(df_daily, 'bal')
+        df_daily = remove_spikes(df_daily, 'bal', window_size, sigma)
     return df_daily
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_bal_df()))
+    print(transform_df_to_format(get_bal_df()).to_string())

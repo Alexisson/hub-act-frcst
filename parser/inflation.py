@@ -31,7 +31,7 @@ def download_inflation(start_date, end_date):
         output.close()
 
 
-def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True):
+def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True, window_size=3, sigma=2):
     download_inflation(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
@@ -51,8 +51,8 @@ def get_inflation_df(start_date: datetime.datetime, end_date: datetime.datetime,
     new_df.ffill(inplace=True)
     new_df = new_df.rename(columns={'Дата': 'date'})
     if spikes_remove:
-        new_df = remove_spikes(new_df, new_df.columns[1])
-        new_df = remove_spikes(new_df, new_df.columns[2])
+        new_df = remove_spikes(new_df, new_df.columns[1], window_size, sigma)
+        new_df = remove_spikes(new_df, new_df.columns[2], window_size, sigma)
     return new_df
 
 

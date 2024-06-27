@@ -5,7 +5,7 @@ from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_capital_transfers(start_year: int, end_year: int, spikes_remove=True):
+def get_capital_transfers(start_year: int, end_year: int, spikes_remove=True, window_size=3, sigma=2):
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=10&datasetId=18&measureId="
     request = requests.get(url)
     df = pd.DataFrame(
@@ -30,11 +30,11 @@ def get_capital_transfers(start_year: int, end_year: int, spikes_remove=True):
     df_resampled = df.resample('MS').ffill()
     df_resampled = df_resampled.reset_index()
     if spikes_remove:
-        df_resampled = remove_spikes(df_resampled, 'balance')
-        df_resampled = remove_spikes(df_resampled, 'input')
-        df_resampled = remove_spikes(df_resampled, 'output')
+        df_resampled = remove_spikes(df_resampled, 'balance', window_size, sigma)
+        df_resampled = remove_spikes(df_resampled, 'input', window_size, sigma)
+        df_resampled = remove_spikes(df_resampled, 'output', window_size, sigma)
     return df_resampled
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_capital_transfers(2019, 2023)))
+    print(transform_df_to_format(get_capital_transfers(2019, 2023)).to_string())

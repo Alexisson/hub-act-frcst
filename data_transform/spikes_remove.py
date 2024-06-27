@@ -2,7 +2,7 @@ import pandas as pd
 from statsmodels.tsa.seasonal import seasonal_decompose
 
 
-def remove_spikes(df, column_name, window_size=3, sigma=2):
+def remove_spikes(df, column_name, window_size, sigma):
     # Конвертируем столбец 'date' в формат datetime и сортируем данные
     df = df.sort_values('date').set_index('date')
 
