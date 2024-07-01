@@ -27,7 +27,7 @@ def download_salary(soup):
         print(f"File downloaded:{url.split('/')[-1]}")
 
 
-def get_salary_df(measure_id):
+def get_salary_df(measure_id=22):
     measure_name = get_measures()[measure_id]
     if not Path(os.path.join(os.path.join(FOLDER, "salary"), "tab4_zpl_2023.xlsx")).is_file():
         stats_soup = get_soup(url)
@@ -54,4 +54,4 @@ def get_salary_df(measure_id):
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_salary_df(43)))
+    print(transform_df_to_format(get_salary_df()))
