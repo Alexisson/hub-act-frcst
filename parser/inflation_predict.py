@@ -51,5 +51,5 @@ def get_inflation_predict():
     return df_resampled
 
 
-df = get_inflation()
+df = get_inflation_predict()
 print(df)
