@@ -51,5 +51,6 @@ def get_key_percent_predict():
     return df_resampled
 
 
-df = get_inflation()
-print(df)
+if __name__ == "__main__":
+    df = get_key_percent_predict()
+    print(df)

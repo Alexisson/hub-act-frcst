@@ -52,5 +52,8 @@ def get_inflation_predict():
     return df_resampled
 
 
-df = get_inflation_predict()
-print(df)
+
+
+if __name__ == "__main__":
+    df = get_inflation_predict()
+    print(df)
