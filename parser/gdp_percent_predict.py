@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from data_transform.transform_df import transform_df_to_format
 from parser.prediction import get_soup, replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
@@ -33,7 +34,7 @@ def get_gdp_predict():
         year = int(quarter.split('/')[1])
         quarter_num = int(quarter.split('/')[0][1])
         first_month_of_quarter = 3 * quarter_num - 2
-        return pd.Timestamp(f"01-{first_month_of_quarter}-{year}")
+        return pd.Timestamp(year=2000 + year, month=first_month_of_quarter, day=1)
 
     new_index = [quarter_to_date(q) for q in df.index[1:].insert(0, ["Q1/24"])]
     df.index = new_index
@@ -45,4 +46,10 @@ def get_gdp_predict():
     df.columns = ["date", "gdp"]
     df.set_index('date', inplace=True)
     df = df.asfreq('D').fillna(method='ffill')
-    return df
+    df['gdp'] = df['gdp'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
+    df['gdp'] = df['gdp'].astype(float)
+    return df.reset_index()
+
+
+if __name__ == "__main__":
+    print(transform_df_to_format(get_gdp_predict()))

@@ -48,7 +48,9 @@ def get_salary_df(measure_id=22):
 
     # Заполняем пропущенные месяцы данным
     df_res = df_res.asfreq('D').fillna(method='ffill')
-    return df_res
+    df_res['salary'] = df_res['salary'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
+    df_res['salary'] = df_res['salary'].astype(float)
+    return df_res.reset_index()
 
 
 if __name__ == "__main__":

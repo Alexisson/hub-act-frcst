@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 
+from data_transform.transform_df import transform_df_to_format
 from parser.cb_xlsx import get_soup
 from parser.prediction import replace_with_average
 
@@ -34,13 +35,10 @@ def get_inflation_predict():
         year = int(quarter.split('/')[1])
         quarter_num = int(quarter.split('/')[0][1])
         first_month_of_quarter = 3 * quarter_num - 2
-        return pd.Timestamp(f"01-{first_month_of_quarter}-{year}")
+        return pd.Timestamp(year=2000 + year, month=first_month_of_quarter, day=1)
 
     new_index = [quarter_to_date(q) for q in df.index[1:].insert(0, ["Q1/24"])]
     df.index = new_index
-
-    # Преобразование индекса 'Actual' в дату
-    df.index = pd.to_datetime(df.index, errors='coerce')
     df = df.iloc[:, [2]]
     df = df.reset_index()
     df.columns = ["date", "inflation"]
@@ -48,11 +46,11 @@ def get_inflation_predict():
     # Заполняем пропущенные месяцы данными
     df.set_index('date', inplace=True)
     df = df.asfreq('D').fillna(method='ffill')
-    return df
-
-
+    df['inflation'] = df['inflation'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
+    df['inflation'] = df['inflation'].astype(float)
+    return df.reset_index()
 
 
 if __name__ == "__main__":
     df = get_inflation_predict()
-    print(df)
+    print(transform_df_to_format(df))
