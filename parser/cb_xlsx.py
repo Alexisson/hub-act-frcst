@@ -20,7 +20,10 @@ url_for_stats = "https://cbr.ru/statistics/bank_sector/review/"
 
 
 def get_soup(url_for_parse):
-    page = requests.get(url_for_parse)
+    headers = {
+        'User-Agent': 'PostmanRuntime/7.39.0'
+    }
+    page = requests.get(url_for_parse, headers=headers)
     return BeautifulSoup(page.text, "html.parser")
 
 

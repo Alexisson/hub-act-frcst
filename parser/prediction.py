@@ -6,8 +6,8 @@ import requests
 from bs4 import BeautifulSoup
 
 from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
-from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from parser.cb_xlsx import get_soup
 from parser.cfg import FOLDER
 
 if not Path(FOLDER).is_dir():
@@ -16,11 +16,6 @@ if not Path(os.path.join(FOLDER, "prediction")).is_dir():
     Path(os.path.join(FOLDER, "prediction")).mkdir(parents=True)
 
 url_for_parse = "https://cbr.ru/about_br/publ/ondkp/on_2024_2026/"
-
-
-def get_soup(url_for_parse):
-    page = requests.get(url_for_parse)
-    return BeautifulSoup(page.text, "html.parser")
 
 
 def replace_with_average(value):

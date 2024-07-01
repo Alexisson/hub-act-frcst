@@ -33,5 +33,5 @@ def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spike
 
 
 if __name__ == "__main__":
-    # print(get_measures(52))
-    print(transform_df_to_format(get_loans_volume_msp_df(2015, 2023, measure_id=85)))
+    print(get_measures(52))
+    #print(transform_df_to_format(get_loans_volume_msp_df(2015, 2023, measure_id=85)))

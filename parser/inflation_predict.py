@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 
-from parser.prediction import get_soup, replace_with_average
+from parser.cb_xlsx import get_soup
+from parser.prediction import replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
 
