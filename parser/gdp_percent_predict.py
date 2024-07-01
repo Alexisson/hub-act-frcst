@@ -44,8 +44,5 @@ def get_gdp_predict():
     df = df.reset_index()
     df.columns = ["date", "gdp"]
     df.set_index('date', inplace=True)
-
-    # Заполняем пропущенные месяцы данными
-    df_resampled = df.resample('MS').ffill()
-    df_resampled = df_resampled.reset_index()
-    return df_resampled
+    df = df.asfreq('D').fillna(method='ffill')
+    return df

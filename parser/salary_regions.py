@@ -46,11 +46,9 @@ def get_salary_df(measure_id=22):
     df_res.loc[df_res.index[-1], 'date'] += pd.DateOffset(months=11)
     df_res.set_index('date', inplace=True)
 
-    # Заполняем пропущенные месяцы данными
-    df_resampled = df_res.resample('MS').ffill()
-    df_resampled = df_resampled.reset_index()
-
-    return df_resampled
+    # Заполняем пропущенные месяцы данным
+    df_res = df_res.asfreq('D').fillna(method='ffill')
+    return df_res
 
 
 if __name__ == "__main__":

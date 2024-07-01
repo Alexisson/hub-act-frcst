@@ -43,12 +43,11 @@ def get_key_percent_predict():
     df = df.iloc[:, [4]]
     df = df.reset_index()
     df.columns = ["date", "key_percent"]
-    df.set_index('date', inplace=True)
 
     # Заполняем пропущенные месяцы данными
-    df_resampled = df.resample('MS').ffill()
-    df_resampled = df_resampled.reset_index()
-    return df_resampled
+    df.set_index('date', inplace=True)
+    df = df.asfreq('D').fillna(method='ffill')
+    return df
 
 
 if __name__ == "__main__":
