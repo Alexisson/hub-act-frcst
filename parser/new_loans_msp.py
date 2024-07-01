@@ -5,8 +5,8 @@ from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_new_loans_msp_df(start_year: int, end_year: int, spikes_remove=True, window_size=3, sigma=2):
-    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=53&measureId=22"
+def get_new_loans_msp_df(start_year: int, end_year: int, measure_id=22, spikes_remove=True, window_size=3, sigma=2):
+    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=53&measureId={measure_id}"
     request = requests.get(url)
     df = pd.DataFrame(columns=["date", "msp_loans"])
     i = 0
@@ -23,4 +23,4 @@ def get_new_loans_msp_df(start_year: int, end_year: int, spikes_remove=True, win
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_new_loans_msp_df(2015, 2023)))
+    print(transform_df_to_format(get_new_loans_msp_df(2015, 2023, measure_id=47)))

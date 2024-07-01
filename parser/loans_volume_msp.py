@@ -5,9 +5,17 @@ from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
 
-def get_loans_volume_msp_df(start_year: int, end_year: int, spikes_remove=True, window_size=3, sigma=2):
+def get_measures(dataset_id: int = 52):
+    url = f"https://cbr.ru/dataservice/measures?datasetId={dataset_id}"
+    request = requests.get(url)
+    regions = {}
+    for i in request.json()['measure']:
+        regions[i["id"]] = i["name"]
+    return regions
 
-    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=52&measureId=22"
+
+def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spikes_remove=True, window_size=3, sigma=2):
+    url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=52&measureId={measure_id}"
     request = requests.get(url)
     df = pd.DataFrame(
         columns=["date", "msp_loans_volume"])
@@ -25,4 +33,5 @@ def get_loans_volume_msp_df(start_year: int, end_year: int, spikes_remove=True, 
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_loans_volume_msp_df(2015, 2023)))
+    # print(get_measures(52))
+    print(transform_df_to_format(get_loans_volume_msp_df(2015, 2023, measure_id=85)))
