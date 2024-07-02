@@ -8,8 +8,7 @@ from data_transform.transform_df import transform_df_to_format
 def get_capital_transfers(start_year: int, end_year: int, spikes_remove=True, window_size=3, sigma=2):
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=10&datasetId=18&measureId="
     request = requests.get(url)
-    df = pd.DataFrame(
-        columns=["date", "balance", "input", "output"])
+    df = pd.DataFrame(columns=["date", "balance", "input", "output"])
     i = 0
     values = {}
     for row in request.json()["RawData"]:
