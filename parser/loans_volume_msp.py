@@ -1,10 +1,12 @@
+from functools import lru_cache
+
 import pandas as pd
 import requests
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
 
-
+@lru_cache(maxsize=None)
 def get_measures(dataset_id: int = 52):
     url = f"https://cbr.ru/dataservice/measures?datasetId={dataset_id}"
     request = requests.get(url)
@@ -33,5 +35,5 @@ def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spike
 
 
 if __name__ == "__main__":
-    print(get_measures(52))
+    print(get_measures())
     #print(transform_df_to_format(get_loans_volume_msp_df(2015, 2023, measure_id=85)))
