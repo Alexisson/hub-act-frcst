@@ -46,6 +46,7 @@ def download_all_credits_msp(soup, base_url, folder):
 def download_files_from_href(soup, base_url, files_list):
     for file in files_list:
         a_tags = soup.find_all('a', href=lambda href: href and (file in href) and (
+                "by_activity" not in href) and (
                 "branches" not in href) and ".xlsx" in href)
         for a in a_tags:
             if not Path(os.path.join(FOLDER, file)).is_dir():
