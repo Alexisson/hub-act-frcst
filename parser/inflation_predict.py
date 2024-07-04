@@ -2,13 +2,14 @@ import numpy as np
 import pandas as pd
 
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cb_xlsx import get_soup
 from parser.prediction import replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
 
 
-def get_inflation_predict():
+def get_inflation_predict_data():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -48,9 +49,11 @@ def get_inflation_predict():
     df = df.asfreq('D').fillna(method='ffill')
     df['inflation'] = df['inflation'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
     df['inflation'] = df['inflation'].astype(float)
-    return df.reset_index()
+    df = df.reset_index()
+    write_to_db(df, "inflation_predict")
+    return df
 
 
 if __name__ == "__main__":
-    df = get_inflation_predict()
+    df = get_inflation_predict_data()
     print(transform_df_to_format(df))

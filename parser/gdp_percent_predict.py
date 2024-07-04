@@ -2,12 +2,13 @@ import numpy as np
 import pandas as pd
 
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.prediction import get_soup, replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
 
 
-def get_gdp_predict():
+def get_gdp_predict_data():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -48,8 +49,10 @@ def get_gdp_predict():
     df = df.asfreq('D').fillna(method='ffill')
     df['gdp'] = df['gdp'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
     df['gdp'] = df['gdp'].astype(float)
-    return df.reset_index()
+    df = df.reset_index()
+    write_to_db(df, "gdp_predict")
+    return
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_gdp_predict()))
+    print(transform_df_to_format(get_gdp_predict_data()))

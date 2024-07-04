@@ -5,6 +5,8 @@ import requests
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
+
 
 @lru_cache(maxsize=None)
 def get_measures(dataset_id: int = 52):
@@ -16,7 +18,7 @@ def get_measures(dataset_id: int = 52):
     return regions
 
 
-def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spikes_remove=True, window_size=3, sigma=2):
+def get_loans_volume_msp_data(start_year: int, end_year: int, measure_id=22):
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=23&datasetId=53&measureId={measure_id}"
     request = requests.get(url)
     df = pd.DataFrame(
@@ -29,8 +31,8 @@ def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spike
             values.append(row["obs_val"])
             df.loc[i] = values
             i += 1
-    if spikes_remove:
-        df = remove_spikes(df, "msp_loans_volume", window_size, sigma)
+
+    write_to_db(df, "msp_loans_volume")
     return df
 
 

@@ -4,12 +4,15 @@ from pathlib import Path
 
 import pandas as pd
 import requests
+from sqlalchemy import create_engine
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cb_xlsx import get_soup
 from parser.cfg import FOLDER, BASE_URL
 from parser.utils import download_xlsx_file
+from settings import settings
 
 
 def download_bal():
@@ -49,7 +52,7 @@ def generate_dates(quarter_str, value):
 
 
 # Счет текущих операций
-def get_bal_df(spikes_remove=True, window_size=3, sigma=2):
+def get_bal_data():
     if not Path(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx")).is_file():
         download_bal()
     df = pd.read_excel(os.path.join(os.path.join("files", "bal"), f"bal_of_payments_standart.xlsx"),
@@ -60,10 +63,8 @@ def get_bal_df(spikes_remove=True, window_size=3, sigma=2):
         df_quarter = generate_dates(row['date'], row['bal'])
         df_daily = pd.concat([df_daily, df_quarter], ignore_index=True)
     df_daily = df_daily.ffill()
-    if spikes_remove:
-        df_daily = remove_spikes(df_daily, 'bal', window_size, sigma)
+    write_to_db(df_daily, "bal")
     return df_daily
 
-
 if __name__ == "__main__":
-    print(transform_df_to_format(get_bal_df()).to_string())
+    print(transform_df_to_format(get_bal_data()))

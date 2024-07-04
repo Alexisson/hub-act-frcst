@@ -2,12 +2,13 @@ import numpy as np
 import pandas as pd
 
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.prediction import get_soup, replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
 
 
-def get_key_percent_predict():
+def get_key_percent_predict_data():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -50,9 +51,11 @@ def get_key_percent_predict():
     df = df.asfreq('D').fillna(method='ffill')
     df['key_percent'] = df['key_percent'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
     df['key_percent'] = df['key_percent'].astype(float)
-    return df.reset_index()
+    df = df.reset_index()
+    write_to_db(df, "key_percent_predict")
+    return df
 
 
 if __name__ == "__main__":
-    df = get_key_percent_predict()
+    df = get_key_percent_predict_data()
     print(transform_df_to_format(df))

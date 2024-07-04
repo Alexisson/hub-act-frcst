@@ -5,6 +5,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from db.pandas_to_db import write_to_db
 from parser.cfg import FOLDER
 from parser.utils import download_xlsx_file
 
@@ -27,7 +28,7 @@ def download_cpi():
     print(f"File downloaded:{bal_url.split('/')[-1]}")
 
 
-def get_cpi_df():
+def get_cpi_data():
     if not Path(os.path.join(os.path.join("files", "cpi"), f"Ipc_mes_05-2024.xlsx")).is_file():
         download_cpi()
     df = pd.read_excel(os.path.join(os.path.join("files", "cpi"), f"Ipc_mes_05-2024.xlsx"), sheet_name="01",
@@ -40,6 +41,7 @@ def get_cpi_df():
             date = datetime(year, index + 1, 1)
             # Добавляем строку в результат
             result = pd.concat([result, pd.DataFrame({'date': [date], 'value': [row[str(year)]]})], ignore_index=True)
+    write_to_db(result, "cpi")
     return result
 
 

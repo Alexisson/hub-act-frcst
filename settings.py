@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     POSTGRES_PORT: int
     POSTGRES_DB: str
 
+    class Config:
+        env_file = '.env'
+
 
 @lru_cache
 def get_settings():

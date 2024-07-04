@@ -7,6 +7,7 @@ from bs4 import BeautifulSoup
 
 from data_transform.calculate_avg import get_average_coefficient, approximate_df_from_year_to_monthly
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cb_xlsx import get_soup
 from parser.cfg import FOLDER
 
@@ -41,7 +42,7 @@ def replace_with_average(value):
 # Применение функции ко всем ячейкам DataFrame
 
 
-def get_inflation_predict(spikes_remove=True):
+def get_inflation_predict_data():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -79,6 +80,7 @@ def get_inflation_predict(spikes_remove=True):
     df.columns = df.columns.str.replace('\xa0', ' ', regex=True)
     new_df[new_df.columns[3]] = new_df[new_df.columns[3]].astype(float)
     new_df[new_df.columns[3]] = new_df[new_df.columns[3]].astype(float)
+    write_to_db(new_df, "prediction")
     return new_df
 
 

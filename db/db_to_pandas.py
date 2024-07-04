@@ -1,24 +1,23 @@
 import pandas as pd
 import psycopg2
+from sqlalchemy import create_engine, exc
 
-# Параметры подключения к базе данных
-db_username = 'postgres'
-db_password = 'test'  # Лучше бы тут это не хранить а положить в env(ближе к деплою разберемся)
-db_host = 'test'
-db_port = '5432'
-db_name = 'test'
-
-conn_string = f"dbname='{db_name}' user='{db_username}' password='{db_password}' host='{db_host}' port='{db_port}'"
-
-conn = psycopg2.connect(conn_string)
-
-query = "SELECT * FROM test_table;"
+from settings import settings
 
 
-df = pd.read_sql_query(query, conn)
+def read_dataframe_from_table(table_name):
+    try:
+        engine = create_engine(
+            f'postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}',
+            connect_args={'options': '-csearch_path={}'.format("s_pg_hub")})
+    except exc.SQLAlchemyError as e:
+        print(f"Ошибка подключения: {e}")
+        return
+    cnx = engine.connect()
+    df = pd.read_sql_table(table_name, cnx)
+    cnx.close()
+    return df
 
 
-conn.close()
-
-
-print(df)
+if __name__ == "__main__":
+    print(read_dataframe_from_table('resident_loans_volume'))

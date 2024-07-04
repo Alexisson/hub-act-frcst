@@ -9,6 +9,7 @@ import requests
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cfg import FOLDER
 
 
@@ -33,7 +34,7 @@ def to_date(year, quarter):
     return datetime(year, quarter_to_month[quarter], 1)
 
 
-def get_gdp_on_2021_prices_dataframe(spikes_remove=True, window_size=3, sigma=2):
+def get_gdp_on_2021_prices_data():
     download_gdp()
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx"),
                        sheet_name="9", usecols='A:BA', skiprows=2, nrows=3)
@@ -72,12 +73,11 @@ def get_gdp_on_2021_prices_dataframe(spikes_remove=True, window_size=3, sigma=2)
     # Заполняем пропущенные месяцы данными
     df_resampled = new_df.resample('MS').ffill()
     df_resampled = df_resampled.reset_index()
-    if spikes_remove:
-        df_resampled = remove_spikes(df_resampled, 'gdp', window_size, sigma)
+    write_to_db(df_resampled, "gdp_on_2021_prices")
     return df_resampled
 
 
-def get_gdp_dataframe_wout_seasons():
+def get_gdp_dataframe_wout_seasons_data():
     download_gdp()
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx"),
                        sheet_name="10", usecols='A:BA', skiprows=2, nrows=3)
@@ -115,10 +115,12 @@ def get_gdp_dataframe_wout_seasons():
 
     # Заполняем пропущенные месяцы данными
     df_resampled = new_df.resample('MS').ffill()
-    return df_resampled.reset_index()
+    df_resampled = df_resampled.reset_index()
+    write_to_db(df_resampled, "gdp_wout_seasons")
+    return df_resampled
 
 
-def get_gdp_dataframe():
+def get_gdp_data():
     download_gdp()
     df = pd.read_excel(os.path.join(os.path.join("files", "gdp"), f"VVP_KVartal_s%201995-2024.xlsx"),
                        sheet_name="2", usecols='A:BA', skiprows=2, nrows=3)
@@ -156,10 +158,11 @@ def get_gdp_dataframe():
 
     # Заполняем пропущенные месяцы данными
     df_resampled = new_df.resample('MS').ffill()
-    return df_resampled.reset_index()
+    df_resampled = df_resampled.reset_index()
+    write_to_db(df_resampled.reset_index(), "gdp")
+    return df_resampled
 
 
 # download_gdp()
 if __name__ == "__main__":
-    df = get_gdp_on_2021_prices_dataframe()
-    print(transform_df_to_format(df))
+    pass

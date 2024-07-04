@@ -6,6 +6,7 @@ import pandas as pd
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cb_xlsx import download_files_from_href, get_soup, url_for_parse
 from parser.cfg import BASE_URL, FOLDER
 from parser.loans_volume_msp import get_measures
@@ -14,7 +15,7 @@ import warnings
 warnings.simplefilter("ignore")
 
 
-def get_new_loans_resident(measure_id=22, spike_remove=True, window_size=3, sigma=2):
+def get_new_loans_resident_data(measure_id=22, spike_remove=True, window_size=3, sigma=2):
     soup = get_soup(url_for_parse)
     if not Path(os.path.join(FOLDER, "New_loans_corp")).is_dir():
         Path(os.path.join(FOLDER, "New_loans_corp")).mkdir(parents=True)
@@ -45,10 +46,9 @@ def get_new_loans_resident(measure_id=22, spike_remove=True, window_size=3, sigm
             # Форматируем дату
             formatted_date = f"{date[:2]}{date[2:4]}_{date[4:6]}_{date[6:]}"
             # Выводим путь к файлу
-    if spike_remove:
-        df = remove_spikes(df, "resident_loans_volume", window_size, sigma)
+    write_to_db(df, "new_loans_resident")
     return df
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_new_loans_resident()).to_string())
+    print(transform_df_to_format(get_new_loans_resident_data()).to_string())

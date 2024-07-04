@@ -7,6 +7,7 @@ import pandas as pd
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cfg import FOLDER
 
 start_date = datetime.datetime.strptime("01.01.2015", "%d.%m.%Y")
@@ -29,7 +30,7 @@ def download_dollar_exchange_rate(start_date, end_date):
         output.close()
 
 
-def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True, window_size=3, sigma=2):
+def get_dollar_data(start_date: datetime.datetime, end_date: datetime.datetime, spikes_remove=True, window_size=3, sigma=2):
     download_dollar_exchange_rate(start_date, end_date)
     start_date_str = start_date.strftime("%d.%m.%Y")
     end_date_str = end_date.strftime("%d.%m.%Y")
@@ -43,8 +44,7 @@ def get_dollar_df(start_date: datetime.datetime, end_date: datetime.datetime, sp
 
     # Группировка по месяцу и вычисление среднего значения
     df_monthly = df.groupby('date').mean().reset_index()
-    if spikes_remove:
-        df_monthly = remove_spikes(df_monthly, 'curs', window_size, sigma)
+    write_to_db(df_monthly, "dollar")
     return df_monthly
 
 

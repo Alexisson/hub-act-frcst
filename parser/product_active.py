@@ -2,6 +2,7 @@ import pandas as pd
 import requests
 
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 
 
 def get_product_actives(start_year: int, end_year: int):
@@ -21,6 +22,7 @@ def get_product_actives(start_year: int, end_year: int):
             values.append(row["obs_val"])
             df.loc[i // 3] = values
         i += 1
+    write_to_db(df, "product_active")
     return df
 
 

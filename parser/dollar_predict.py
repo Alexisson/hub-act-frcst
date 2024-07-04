@@ -1,12 +1,13 @@
 import numpy as np
 import pandas as pd
 
+from db.pandas_to_db import write_to_db
 from parser.prediction import get_soup, replace_with_average
 
 URL = "https://ru.tradingeconomics.com/russia/forecast"
 
 
-def get_dollar_predict():
+def get_dollar_predict_data():
     # Parse the HTML content
 
     # Find the table with the class 'data levels'
@@ -47,5 +48,6 @@ def get_dollar_predict():
     # Заполняем пропущенные месяцы данными
     df_resampled = df.resample('MS').ffill()
     df_resampled = df_resampled.reset_index()
+    write_to_db(df_resampled, "dollar_predict")
     return df_resampled
 

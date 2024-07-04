@@ -3,9 +3,10 @@ import requests
 
 from data_transform.spikes_remove import remove_spikes
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 
 
-def get_direct_investments(start_year: int, end_year: int, spikes_remove=True, window_size=3, sigma=2):
+def get_direct_investments_data(start_year: int, end_year: int):
     url = f"https://cbr.ru/dataservice/data?y1={start_year}&y2={end_year}&publicationId=11&datasetId=19&measureId="
     request = requests.get(url)
     df = pd.DataFrame(
@@ -29,12 +30,9 @@ def get_direct_investments(start_year: int, end_year: int, spikes_remove=True, w
     # Заполняем пропущенные месяцы данными
     df_resampled = df.resample('MS').ffill()
     df_resampled = df_resampled.reset_index()
-    if spikes_remove:
-        df_resampled = remove_spikes(df_resampled, 'balance', window_size, sigma)
-        df_resampled = remove_spikes(df_resampled, 'pure_assumption_of_liability', window_size, sigma)
-        df_resampled = remove_spikes(df_resampled, 'net_acquisition_of_financial_assets', window_size, sigma)
+    write_to_db(df_resampled, "direct_investments")
     return df_resampled
 
 
 if __name__ == "__main__":
-    print(get_direct_investments(2015, 2023).to_string())
+    print(get_direct_investments_data(2015, 2023).to_string())

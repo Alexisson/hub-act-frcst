@@ -4,6 +4,7 @@ from pathlib import Path
 import pandas as pd
 
 from data_transform.transform_df import transform_df_to_format
+from db.pandas_to_db import write_to_db
 from parser.cb_xlsx import download_files_from_href, get_soup
 from parser.cfg import FOLDER
 from parser.loans_volume_msp import get_measures
@@ -27,7 +28,7 @@ def download_salary(soup):
         print(f"File downloaded:{url.split('/')[-1]}")
 
 
-def get_salary_df(measure_id=22):
+def get_salary_regions_data(measure_id=22):
     measure_name = get_measures()[measure_id]
     if not Path(os.path.join(os.path.join(FOLDER, "salary"), "tab4_zpl_2023.xlsx")).is_file():
         stats_soup = get_soup(url)
@@ -50,8 +51,10 @@ def get_salary_df(measure_id=22):
     df_res = df_res.asfreq('D').fillna(method='ffill')
     df_res['salary'] = df_res['salary'].replace(r'\n', '', regex=True).replace(r'\r', '', regex=True)
     df_res['salary'] = df_res['salary'].astype(float)
-    return df_res.reset_index()
+    df_res = df_res.reset_index()
+    write_to_db(df_res, "salary_regions")
+    return df_res
 
 
 if __name__ == "__main__":
-    print(transform_df_to_format(get_salary_df()))
+    print(transform_df_to_format(get_salary_regions_data()))
