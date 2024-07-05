@@ -5,7 +5,7 @@ from db.db_to_pandas import read_dataframe_from_table
 from parser.resident_loans_volume import get_loans_volume_resident_data
 
 
-def get_resident_loans_volume_df(measure_id=22, spikes_remove=True, window_size=3, sigma=2):
+def get_resident_loans_volume_df(start_year, end_year, measure_id=22, spikes_remove=True, window_size=3, sigma=2):
     try:
         df = read_dataframe_from_table("resident_loans_volume")
     except exc.SQLAlchemyError as e:

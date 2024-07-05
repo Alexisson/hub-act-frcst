@@ -6,7 +6,7 @@ import parser.prediction
 from parser.resident_loans_volume import get_loans_volume_resident_data
 
 
-def get_new_loans_resident_data(measure_id=22, spikes_remove=True, window_size=3, sigma=2):
+def get_new_loans_resident_data(start_year, end_year, measure_id=22, spikes_remove=True, window_size=3, sigma=2):
     try:
         df = read_dataframe_from_table("new_loans_resident")
     except exc.SQLAlchemyError as e:

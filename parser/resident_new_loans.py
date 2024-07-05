@@ -15,7 +15,7 @@ import warnings
 warnings.simplefilter("ignore")
 
 
-def get_new_loans_resident_data(measure_id=22, spike_remove=True, window_size=3, sigma=2):
+def get_new_loans_resident_data(measure_id=22):
     soup = get_soup(url_for_parse)
     if not Path(os.path.join(FOLDER, "New_loans_corp")).is_dir():
         Path(os.path.join(FOLDER, "New_loans_corp")).mkdir(parents=True)
