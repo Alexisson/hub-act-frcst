@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
@@ -19,9 +21,9 @@ class PredictInput:
     start_date: str = '2023-05'
     last_predict_date: str = '2026-03'
     trend: str = 'ct'
-    custom = False
-    season_ord = (1, 1, 1, 12)
-    custom_pdq = (1, 1, 1)
+    custom: bool = False
+    season_ord: Tuple = (1, 1, 1, 12)
+    custom_pdq: Tuple = (1, 1, 1)
 
 
 class Predictor:
@@ -65,8 +67,8 @@ class Predictor:
     # dataframe - исходные данные
     # predict - спрогнозированные данные
     # name - название прогнозируемой величины
-    def show_plot(self, input_params: PredictInput, name, plt_title='Российская Федерация'):
-        self.predict = self.get_data_predict(input_params).predict
+    def show_plot(self, predict, input_params: PredictInput, name, plt_title='Российская Федерация'):
+        self.predict = predict
         columns = list(self.dataset)
         plt.figure(figsize=(12, 4))
         plt.plot(self.dataset[columns[0]], self.dataset[columns[1]].values / 1e6)
@@ -106,7 +108,6 @@ class Predictor:
         predict = pred.predicted_mean
         test_pred = predict[0:len(test_data)]
         self.predict = predict
-
         return PredictResult(
             predict=self.predict,
             mape=self.mape(test_data.values, test_pred.values),

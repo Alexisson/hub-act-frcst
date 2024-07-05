@@ -9,7 +9,9 @@ def get_loans_volume_msp_df(start_year: int, end_year: int, measure_id=22, spike
                                 sigma=2):
     try:
         df = read_dataframe_from_table("loans_volume_msp")
-    except exc.SQLAlchemyError as e:
+    except ValueError as e:
+        df = get_loans_volume_msp_data(start_year, end_year, measure_id)
+    if df is None:
         df = get_loans_volume_msp_data(start_year, end_year, measure_id)
     if spikes_remove:
         df = remove_spikes(df, "msp_loans_volume", window_size, sigma)

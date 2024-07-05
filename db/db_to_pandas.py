@@ -10,10 +10,10 @@ def read_dataframe_from_table(table_name):
         engine = create_engine(
             f'postgresql://{settings.POSTGRES_USER}:{settings.POSTGRES_PASSWORD}@{settings.POSTGRES_HOST}:{settings.POSTGRES_PORT}/{settings.POSTGRES_DB}',
             connect_args={'options': '-csearch_path={}'.format("s_pg_hub")})
+        cnx = engine.connect()
     except exc.SQLAlchemyError as e:
-        print(f"Ошибка подключения: {e}")
+        #print(f"Ошибка подключения: {e}")
         return
-    cnx = engine.connect()
     df = pd.read_sql_table(table_name, cnx)
     cnx.close()
     return df
